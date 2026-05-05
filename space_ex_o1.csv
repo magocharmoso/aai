@@ -1,0 +1,11 @@
+PassengerId,HomePlanet,CryoSleep,Cabin,Destination,Age,VIP,RoomService,FoodCourt,ShoppingMall,Spa,VRDeck,Name
+9244_01,Earth,True,G/1489/S,PSO J318.5-22,13.0,False,0.0,0.0,0.0,0.0,0.0,Chrisa Francock
+9246_01,Earth,,G/1490/S,TRAPPIST-1e,32.0,False,0.0,0.0,0.0,0.0,0.0,
+9247_01,Earth,True,G/1491/S,TRAPPIST-1e,33.0,False,0.0,0.0,0.0,0.0,,Phia Cleang
+9248_01,,False,F/1792/S,55 Cancri e,38.0,,28.0,1208.0,973.0,207.0,0.0,Gian Perle
+9250_01,Europa,False,E/597/P,TRAPPIST-1e,29.0,False,0.0,2972.0,,28.0,188.0,Chain Reedectied
+9251_01,Mars,True,F/1793/S,TRAPPIST-1e,25.0,False,0.0,0.0,0.0,0.0,0.0,Melios Kashe
+9252_01,Europa,False,B/301/P,55 Cancri e,26.0,False,0.0,8160.0,205.0,0.0,438.0,Alchium Stranbeate
+9252_02,Europa,True,B/301/P,55 Cancri e,19.0,False,0.0,0.0,0.0,0.0,0.0,Muonon Stranbeate
+9253_01,Earth,True,G/1493/S,PSO J318.5-22,16.0,False,0.0,0.0,0.0,0.0,0.0,Jimmyn Thomason
+9254_01,Earth,True,G/1502/P,PSO J318.5-22,61.0,False,0.0,0.0,0.0,0.0,0.0,Kenny Mallerez

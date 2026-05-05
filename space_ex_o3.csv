@@ -1,0 +1,11 @@
+PassengerId,HomePlanet,CryoSleep,Cabin,Destination,VIP,RoomService,FoodCourt,ShoppingMall,Spa,VRDeck,Name,Transported
+9272_02,Earth,False,F/1894/P,TRAPPIST-1e,False,86.0,3.0,149.0,208.0,329.0,Gordo Simson,False
+9274_01,,True,G/1508/P,TRAPPIST-1e,False,0.0,0.0,0.0,0.0,0.0,Chelsa Bullisey,True
+9275_01,Europa,False,A/97/P,TRAPPIST-1e,False,0.0,0.0,0.0,0.0,0.0,Polaton Conable,True
+9275_02,Europa,False,A/97/P,TRAPPIST-1e,False,1.0,1146.0,0.0,50.0,34.0,Diram Conable,False
+9275_03,Europa,,A/97/P,TRAPPIST-1e,False,0.0,3208.0,0.0,2.0,330.0,Atlasym Conable,True
+9276_01,Europa,False,A/98/P,55 Cancri e,True,0.0,6819.0,0.0,1643.0,74.0,Gravior Noxnuther,False
+9278_01,Earth,True,G/1499/S,PSO J318.5-22,False,0.0,0.0,0.0,0.0,0.0,Kurta Mondalley,False
+9279_01,Earth,False,G/1500/S,TRAPPIST-1e,False,0.0,0.0,1872.0,1.0,0.0,Fayey Connon,True
+9280_01,Europa,False,E/608/S,55 Cancri e,False,0.0,1049.0,0.0,353.0,3235.0,Celeon Hontichre,False
+9280_02,Europa,False,E/608/S,TRAPPIST-1e,False,126.0,4688.0,0.0,0.0,12.0,Propsh Hontichre,True

@@ -1,0 +1,11 @@
+PassengerId,HomePlanet,CryoSleep,Cabin,Destination,Age,VIP,RoomService,ShoppingMall,Spa,VRDeck,Name,Transported
+9256_01,Earth,True,G/1494/S,TRAPPIST-1e,28.0,False,0.0,0.0,0.0,0.0,Darley Franton,True
+9257_01,,False,F/1892/P,TRAPPIST-1e,13.0,False,39.0,1085.0,24.0,0.0,Ties Apple,False
+9259_01,Earth,,F/1893/P,TRAPPIST-1e,44.0,False,1030.0,0.0,11.0,,Annah Gilleyons,True
+9261_01,Earth,True,G/1504/P,PSO J318.5-22,22.0,False,0.0,0.0,0.0,0.0,Therta Casentry,False
+9264_01,Europa,True,E/606/S,55 Cancri e,30.0,False,0.0,0.0,0.0,0.0,Giedir Sionerorly,True
+9267_01,Europa,True,E/607/S,TRAPPIST-1e,21.0,False,0.0,0.0,0.0,0.0,Arraid Opshaft,True
+9267_02,Europa,True,E/607/S,TRAPPIST-1e,20.0,False,0.0,0.0,0.0,0.0,Sabi Opshaft,True
+9268_01,Earth,True,G/1505/P,TRAPPIST-1e,31.0,False,0.0,0.0,0.0,0.0,Agnesa Baldson,True
+9270_01,Earth,True,G/1497/S,55 Cancri e,33.0,False,0.0,0.0,0.0,0.0,Lan Mckinsond,True
+9272_01,Earth,False,G/1507/P,TRAPPIST-1e,26.0,False,240.0,510.0,0.0,0.0,Ireene Simson,True
