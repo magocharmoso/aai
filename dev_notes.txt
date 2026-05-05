@@ -1,0 +1,22 @@
+O trabalho tem os seguintes objetivos: 
+
+O1:  Prever  a  variável  Transported  dados  os  atributos  do  dataset 
+fornecido. 
+O2:  Prever  o  valor  dispendido  pelos  passageiros  em  restaurantes 
+(variável FoodCourt) 
+O3:  É  possível  prever  com  confiança  a  idade  dos  passageiros  que 
+foram transportados? 
+O4:  Quais  são  os  atributos  mais  importantes  nos  melhores  modelos 
+acima (O1, O2, O3)?
+
+Há dois problemas:
+
+Um de classificação:
+O1:  Prever  a  variável  Transported  dados  os  atributos  do  dataset 
+fornecido.
+
+E outros dois de regressão:
+O2 e O3
+
+O objetivo O4 é resolvido no notebook da TP
+
