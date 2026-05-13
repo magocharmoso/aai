@@ -4,8 +4,8 @@ import math
 
 """
 This module contains functions to present the statistics of the regression models.
-Presents the R2, RMSE, Correlation Score, Maximum Error and Mean Absolute Error.
-Adaptation from TP06
+
+
 """
 
 # Default weights for weighted scoring. Keys must match the statistics keys returned
@@ -20,6 +20,10 @@ DEFAULT_WEIGHTS = {
     "max_error": -0.5,
     "mae": -0.5,
 }
+
+"""
+Gets the R2, RMSE, Correlation Score, Maximum Error and Mean Absolute Error.
+"""
 def get_simple_statistics(truth, preds):
     r2 = r2_score(truth, preds)
     rmse = root_mean_squared_error(truth, preds)
@@ -95,15 +99,15 @@ def best_model_simple(models, X_test, y_test, criterion="r2"):
 
     return best_model_name, best_score
 
+
+
 """
-This function compares the models based on a weighted combination of the criteria. The weights are provided in a dictionary, where the keys are the criteria and the values are the weights. The function returns the model with the highest weighted score.
+This method compares the models based on a weighted combination of the criteria. The weights are provided in a dictionary, where the keys are the criteria and the values are the weights. The function returns the model with the highest weighted score.
 models: list of models to compare
 X_test: test data features
 y_test: test data labels
 weights: list of weights for each criterion in a dictionary, in the order of [r2, rmse, correlation, p_value, max_error, mae]
 """
-
-
 
 def model_weighted_score(stats, weights=None):
     if stats is None or not isinstance(stats, dict):
