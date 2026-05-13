@@ -7,6 +7,19 @@ This module contains functions to present the statistics of the regression model
 Presents the R2, RMSE, Correlation Score, Maximum Error and Mean Absolute Error.
 Adaptation from TP06
 """
+
+# Default weights for weighted scoring. Keys must match the statistics keys returned
+# by `get_simple_statistics`. These are reasonable starting values; adjust as needed.
+DEFAULT_WEIGHTS = {
+    "r2": 1.0,
+    # For metrics where lower is better, use negative weights so a smaller metric
+    # increases the overall score when multiplied directly.
+    "rmse": -0.5,
+    "correlation": 0.0,
+    "p_value": 0.0,
+    "max_error": -0.5,
+    "mae": -0.5,
+}
 def get_simple_statistics(truth, preds):
     r2 = r2_score(truth, preds)
     rmse = root_mean_squared_error(truth, preds)
@@ -83,27 +96,76 @@ def best_model_simple(models, X_test, y_test, criterion="r2"):
     return best_model_name, best_score
 
 """
-This function compares the models based on a weighted combination of the criteria. 
+This function compares the models based on a weighted combination of the criteria. The weights are provided in a dictionary, where the keys are the criteria and the values are the weights. The function returns the model with the highest weighted score.
+models: list of models to compare
 X_test: test data features
 y_test: test data labels
 weights: list of weights for each criterion in a dictionary, in the order of [r2, rmse, correlation, p_value, max_error, mae]
 """
 
-def model_weighted_score(stats, weights):
+
+
+def model_weighted_score(stats, weights=None):
+    if stats is None or not isinstance(stats, dict):
+        raise ValueError("stats must be a dictionary as returned by get_simple_statistics")
+
+    if weights is None:
+        weights = DEFAULT_WEIGHTS
+
+    if not isinstance(weights, dict):
+        raise ValueError("weights must be a dict mapping criterion->weight")
+
+    allowed_keys = set(stats.keys())
     score = 0.0
+    total_abs_weight = 0.0
+
     for criterion, weight in weights.items():
-        score += weight * stats[criterion]
+        if criterion not in allowed_keys:
+            raise ValueError(f"Unknown criterion '{criterion}' in weights")
+
+        try:
+            val = float(stats[criterion])
+        except Exception:
+            raise ValueError(f"Statistic '{criterion}' is not numeric: {stats[criterion]!r}")
+        score += float(weight) * val
+        total_abs_weight += abs(float(weight))
+
+    # normalize by sum of absolute weights so scores stay comparable across weightings
+    if total_abs_weight > 0:
+        score = score / total_abs_weight
+
     return score
 
-def best_model_weighted(models, X_test, y_test, weights):
-    best_model = None
-    best_score = 0.0
-    for model in models:
-        preds = model.predict(X_test)
-        model_stats = get_simple_statistics(y_test, preds)
-        score = model_weighted_score(model_stats, weights)
+def best_model_weighted(models, X_test, y_test, weights=None):
+    if models is None:
+        raise ValueError("models must be an iterable of estimators")
 
-        if score > best_score:
+    if weights is None:
+        weights = DEFAULT_WEIGHTS
+
+    best_model = None
+    best_score = None
+
+    for model in models:
+        try:
+            preds = model.predict(X_test)
+        except Exception:
+            # skip models that cannot predict on the provided X_test
+            continue
+
+        try:
+            model_stats = get_simple_statistics(y_test, preds)
+        except Exception:
+            # skip models that fail to produce stats
+            continue
+
+        try:
+            score = model_weighted_score(model_stats, weights)
+        except Exception:
+            # malformed weights or stats: skip this model
+            continue
+
+        if best_score is None or score > best_score:
             best_model = model
             best_score = score
 
