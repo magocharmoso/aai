@@ -1,4 +1,4 @@
-from sklearn.metrics import r2_score, root_mean_squared_error, max_error, mean_absolute_error
+from sklearn.metrics import confusion_matrix, r2_score, root_mean_squared_error, max_error, mean_absolute_error
 from scipy.stats import pearsonr
 import math
 
@@ -174,3 +174,25 @@ def best_model_weighted(models, X_test, y_test, weights=None):
             best_score = score
 
     return best_model, best_score
+
+"""
+=== DECISION TREE CLASSIFIER METRICS ONLY ===
+"""
+def present_classification_metrics(y_test, y_pred):
+    from sklearn.metrics import (
+        confusion_matrix,
+        classification_report,
+        precision_score,
+        recall_score,
+        f1_score,
+        matthews_corrcoef,
+    )
+    print('=== DECISION TREE CLASSIFIER METRICS ===\n')
+    print('Confusion Matrix:')
+    print(confusion_matrix(y_test, y_pred))
+    print('\nClassification Report:')
+    print(classification_report(y_test, y_pred))
+    print('Precision:', precision_score(y_test, y_pred, average='weighted'))
+    print('Recall:', recall_score(y_test, y_pred, average='weighted'))
+    print('F1-Score:', f1_score(y_test, y_pred, average='weighted'))
+    print('Matthews Correlation Coefficient:', matthews_corrcoef(y_test, y_pred))
