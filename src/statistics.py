@@ -82,13 +82,29 @@ def best_model_simple(models, X_test, y_test, criterion="r2"):
 
     return best_model_name, best_score
 
-def best_model_weighted(models, X_test, y_test, weights):
-    best_model_name = None
-    best_score = None
+"""
+This function compares the models based on a weighted combination of the criteria. 
+X_test: test data features
+y_test: test data labels
+weights: list of weights for each criterion in a dictionary, in the order of [r2, rmse, correlation, p_value, max_error, mae]
+"""
 
+def model_weighted_score(stats, weights):
+    score = 0.0
+    for criterion, weight in weights.items():
+        score += weight * stats[criterion]
+    return score
+
+def best_model_weighted(models, X_test, y_test, weights):
+    best_model = None
+    best_score = 0.0
     for model in models:
         preds = model.predict(X_test)
-        score = get_simple_statistics(y_test, preds)[criterion]
+        model_stats = get_simple_statistics(y_test, preds)
+        score = model_weighted_score(model_stats, weights)
 
-        if best_score is None or compare_value(best_score, score, criterion) > 0.5:
-            best_model_name = model.__class__.__name__
+        if score > best_score:
+            best_model = model
+            best_score = score
+
+    return best_model, best_score
