@@ -1,4 +1,15 @@
-from sklearn.metrics import confusion_matrix, r2_score, root_mean_squared_error, max_error, mean_absolute_error
+from sklearn.metrics import (
+    confusion_matrix,
+    classification_report,
+    precision_score,
+    recall_score,
+    f1_score,
+    matthews_corrcoef,
+    r2_score,
+    root_mean_squared_error,
+    max_error,
+    mean_absolute_error,
+)
 from scipy.stats import pearsonr
 import math
 
@@ -178,21 +189,25 @@ def best_model_weighted(models, X_test, y_test, weights=None):
 """
 === DECISION TREE CLASSIFIER METRICS ONLY ===
 """
-def present_classification_metrics(y_test, y_pred):
-    from sklearn.metrics import (
-        confusion_matrix,
-        classification_report,
-        precision_score,
-        recall_score,
-        f1_score,
-        matthews_corrcoef,
-    )
+def get_classification_statistics(y_test, y_pred):
+    return {
+        "confusion_matrix": confusion_matrix(y_test, y_pred),
+        "classification_report": classification_report(y_test, y_pred),
+        "precision": precision_score(y_test, y_pred, average="weighted"),
+        "recall": recall_score(y_test, y_pred, average="weighted"),
+        "f1_score": f1_score(y_test, y_pred, average="weighted"),
+        "matthews_corrcoef": matthews_corrcoef(y_test, y_pred),
+    }
+
+def present_classification_statistics(y_test, y_pred):
+    metrics = get_classification_statistics(y_test, y_pred)
+
     print('=== DECISION TREE CLASSIFIER METRICS ===\n')
     print('Confusion Matrix:')
-    print(confusion_matrix(y_test, y_pred))
+    print(metrics["confusion_matrix"])
     print('\nClassification Report:')
-    print(classification_report(y_test, y_pred))
-    print('Precision:', precision_score(y_test, y_pred, average='weighted'))
-    print('Recall:', recall_score(y_test, y_pred, average='weighted'))
-    print('F1-Score:', f1_score(y_test, y_pred, average='weighted'))
-    print('Matthews Correlation Coefficient:', matthews_corrcoef(y_test, y_pred))
+    print(metrics["classification_report"])
+    print('Precision:', metrics["precision"])
+    print('Recall:', metrics["recall"])
+    print('F1-Score:', metrics["f1_score"])
+    print('Matthews Correlation Coefficient:', metrics["matthews_corrcoef"])
