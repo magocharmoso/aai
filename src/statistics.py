@@ -197,6 +197,9 @@ def best_model_weighted(models, X_test, y_test, weights=None):
 
     return best_model, best_score
 
+
+
+
 """
 === CLASSIFIER METRICS ONLY ===
 """
@@ -232,4 +235,53 @@ def present_classification_statistics(y_test, y_pred):
     print('F1-Score:', metrics["f1_score"])
     print('Matthews Correlation Coefficient:', metrics["matthews_corrcoef"])
 
+# VIBE CODED GOTTA CHECK IT BUT I NEEDED TO LEAVE WORK 
+def best_model_classification(models, X_test, y_test, criterion="f1_score"):
+    """Select the best classifier from `models` based on a classification metric.
+
+    Uses `get_classification_statistics` to compute metrics for each model and
+    returns the model with the highest value for `criterion` along with the
+    corresponding score.
+
+    Parameters
+    - models: iterable of fitted estimators supporting `.predict`
+    - X_test, y_test: test set
+    - criterion: one of the keys returned by `get_classification_statistics`,
+      e.g. 'precision', 'recall', 'f1_score', 'matthews_corrcoef'.
+
+    Returns (best_model, best_score) or (None, None) if no model produced a score.
+    """
+    if models is None:
+        raise ValueError("models must be an iterable of estimators")
+
+    best_model = None
+    best_score = None
+
+    for model in models:
+        try:
+            preds = model.predict(X_test)
+        except Exception:
+            # skip models that cannot predict on the provided X_test
+            continue
+
+        try:
+            stats = get_classification_statistics(y_test, preds)
+        except Exception:
+            # skip models that fail to produce classification stats
+            continue
+
+        if criterion not in stats:
+            raise ValueError(f"Unknown classification criterion '{criterion}'")
+
+        try:
+            score = float(stats[criterion])
+        except Exception:
+            # if the metric isn't numeric, skip
+            continue
+
+        if best_score is None or score > best_score:
+            best_model = model
+            best_score = score
+
+    return best_model, best_score
 
