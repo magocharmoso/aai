@@ -13,10 +13,47 @@ from sklearn.metrics import (
 from scipy.stats import pearsonr
 import math
 
+# ===== SHARED METHODS ===== #
+# Regression and classification
+
 """
-This module contains functions to present the statistics of the regression models.
+Compares two values based on the criterion. For R2, higher is better. For RMSE, Max Error and MAE, lower is better.
+Its not recomended to use correlation and p-value as criteria, but they are included for completeness. 
+
+The function returns a value between 0 and 1, where values closer to 1 indicate that val1 is better than val0 according to the criterion.
+This is done by calculating the difference between the two values, normalizing it, and then applying a sigmoid function to map it to the range [0, 1].
+"""
+def compare_value(val0, val1, criterion="r2"):
+    # Metrics where larger is better
+    greater_is_better = {"r2", "correlation", "precision", "recall", "f1_score", "matthews_corrcoef"}
+    # Metrics where smaller is better
+    smaller_is_better = {"rmse", "max_error", "mae", "p_value"}
+
+    if criterion in greater_is_better:
+        diff = val1 - val0
+    elif criterion in smaller_is_better:
+        diff = val0 - val1
+    else:
+        raise ValueError("Invalid criterion: %s" % criterion)
+
+    scale = abs(val0) + abs(val1) + 1e-12
+    normalized_diff = diff / scale
+    return 1.0 / (1.0 + math.exp(-8.0 * normalized_diff))
+
+#Simpler version of compare_value that returns -1, 0, or 1 based on whether val1 is better than, equal to, or worse than val0 according to the criterion."""
+def compare_values_simple(val0, val1, criterion="r2"):
+    score = compare_value(val0, val1, criterion)
+    if score > 0.5:
+        return 1
+    elif score < 0.5:
+        return -1
+    else:
+        return 0
 
 
+
+"""
+=== REGRESSION METRICS ONLYs ===
 """
 
 # Default weights for weighted scoring. Keys must match the statistics keys returned
@@ -68,33 +105,7 @@ def present_simple_statistics(truth, preds):
     )
 
 
-"""
-Compares two values based on the criterion. For R2, higher is better. For RMSE, Max Error and MAE, lower is better.
-Its not recomended to use correlation and p-value as criteria, but they are included for completeness. 
 
-The function returns a value between 0 and 1, where values closer to 1 indicate that val1 is better than val0 according to the criterion.
-This is done by calculating the difference between the two values, normalizing it, and then applying a sigmoid function to map it to the range [0, 1].
-"""
-def compare_value(val0, val1, criterion="r2"):
-    if criterion in ["r2", "correlation"]:
-        diff = val1 - val0
-    elif criterion in ["rmse", "max_error", "mae", "p_value"]:
-        diff = val0 - val1
-    else:
-        raise ValueError("Invalid criterion: %s" % criterion)
-
-    scale = abs(val0) + abs(val1) + 1e-12
-    normalized_diff = diff / scale
-    return 1.0 / (1.0 + math.exp(-8.0 * normalized_diff))
-"""
-Simpler version of compare_value that returns -1, 0, or 1 based on whether val1 is better than, equal to, or worse than val0 according to the criterion."""
-def compare_values_simple(val0, val1, criterion="r2"):
-    if compare_value(val0, val1, criterion) > 0.5:
-        return 1
-    elif compare_value(val0, val1, criterion) < 0.5:
-        return -1
-    else:
-        return 0
 
 def best_model_simple(models, X_test, y_test, criterion="r2"):
     best_model_name = None
@@ -187,8 +198,17 @@ def best_model_weighted(models, X_test, y_test, weights=None):
     return best_model, best_score
 
 """
-=== DECISION TREE CLASSIFIER METRICS ONLY ===
+=== CLASSIFIER METRICS ONLY ===
 """
+
+DEFAULT_WEIGHTS_CLASSIFICATION = {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "matthews_corrcoef": 1.0,
+}
+
+
 def get_classification_statistics(y_test, y_pred):
     return {
         "confusion_matrix": confusion_matrix(y_test, y_pred),
@@ -211,3 +231,5 @@ def present_classification_statistics(y_test, y_pred):
     print('Recall:', metrics["recall"])
     print('F1-Score:', metrics["f1_score"])
     print('Matthews Correlation Coefficient:', metrics["matthews_corrcoef"])
+
+
