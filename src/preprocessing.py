@@ -11,8 +11,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 def standardize(numerical_cols: list[str], categorical_cols: list[str], numerical_df: pd.DataFrame, categorical_df: pd.DataFrame) -> pd.DataFrame:
     # Scaling The Data
     # data scaling is needed for the regression algorithms to work properly
-    # scaler = StandardScaler()
-    scaler = MinMaxScaler()
+    scaler = StandardScaler()
     scaled_df = scaler.fit_transform(numerical_df)
     numerical_df = pd.DataFrame(scaled_df, columns = numerical_cols)
 
