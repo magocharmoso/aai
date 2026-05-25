@@ -215,10 +215,10 @@ DEFAULT_WEIGHTS_CLASSIFICATION = {
 def get_classification_statistics(y_test, y_pred):
     return {
         "confusion_matrix": confusion_matrix(y_test, y_pred),
-        "classification_report": classification_report(y_test, y_pred),
-        "precision": precision_score(y_test, y_pred, average="weighted"),
-        "recall": recall_score(y_test, y_pred, average="weighted"),
-        "f1_score": f1_score(y_test, y_pred, average="weighted"),
+        "classification_report": classification_report(y_test, y_pred, zero_division=0),
+        "precision": precision_score(y_test, y_pred, average="weighted", zero_division=0),
+        "recall": recall_score(y_test, y_pred, average="weighted", zero_division=0),
+        "f1_score": f1_score(y_test, y_pred, average="weighted", zero_division=0),
         "matthews_corrcoef": matthews_corrcoef(y_test, y_pred),
     }
 
@@ -235,7 +235,6 @@ def present_classification_statistics(y_test, y_pred):
     print('F1-Score:', metrics["f1_score"])
     print('Matthews Correlation Coefficient:', metrics["matthews_corrcoef"])
 
-# VIBE CODED GOTTA CHECK IT BUT I NEEDED TO LEAVE WORK 
 def best_model_classification(models, X_test, y_test, criterion="f1_score"):
     """Select the best classifier from `models` based on a classification metric.
 
@@ -277,6 +276,75 @@ def best_model_classification(models, X_test, y_test, criterion="f1_score"):
             score = float(stats[criterion])
         except Exception:
             # if the metric isn't numeric, skip
+            continue
+
+        if best_score is None or score > best_score:
+            best_model = model
+            best_score = score
+
+    return best_model, best_score
+
+
+def model_weighted_score_classification(stats, weights=None):
+    if stats is None or not isinstance(stats, dict):
+        raise ValueError("stats must be a dictionary as returned by get_classification_statistics")
+
+    if weights is None:
+        weights = DEFAULT_WEIGHTS_CLASSIFICATION
+
+    if not isinstance(weights, dict):
+        raise ValueError("weights must be a dict mapping criterion->weight")
+
+    allowed_keys = set(stats.keys())
+    score = 0.0
+    total_abs_weight = 0.0
+
+    for criterion, weight in weights.items():
+        if criterion not in allowed_keys:
+            raise ValueError(f"Unknown criterion '{criterion}' in weights")
+
+        try:
+            val = float(stats[criterion])
+        except Exception:
+            raise ValueError(f"Statistic '{criterion}' is not numeric: {stats[criterion]!r}")
+
+        score += float(weight) * val
+        total_abs_weight += abs(float(weight))
+
+    # normalize by sum of absolute weights so scores stay comparable across weightings
+    if total_abs_weight > 0:
+        score = score / total_abs_weight
+
+    return score
+
+
+def best_model_weighted_classification(models, X_test, y_test, weights=None):
+    if models is None:
+        raise ValueError("models must be an iterable of estimators")
+
+    if weights is None:
+        weights = DEFAULT_WEIGHTS_CLASSIFICATION
+
+    best_model = None
+    best_score = None
+
+    for model in models:
+        try:
+            preds = model.predict(X_test)
+        except Exception:
+            # skip models that cannot predict on the provided X_test
+            continue
+
+        try:
+            model_stats = get_classification_statistics(y_test, preds)
+        except Exception:
+            # skip models that fail to produce stats
+            continue
+
+        try:
+            score = model_weighted_score_classification(model_stats, weights)
+        except Exception:
+            # malformed weights or stats: skip this model
             continue
 
         if best_score is None or score > best_score:
