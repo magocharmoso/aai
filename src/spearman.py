@@ -7,7 +7,7 @@ import importlib
 from src import load as load_module
 
 
-def spearman_with_target(path, target_col, filter_col=None, filter_value=None):
+def spearman_with_target(df, target_col, filter_col=None, filter_value=None):
     """
     Compute Spearman correlations between features and target column.
     Optionally filter the data by a column condition (e.g., Transported == True).
@@ -28,17 +28,21 @@ def spearman_with_target(path, target_col, filter_col=None, filter_value=None):
     pd.DataFrame
         DataFrame with correlations and p-values, sorted by absolute correlation.
     """
-    importlib.reload(load_module)
+    # importlib.reload(load_module)
+
+    X = df.drop(columns=[target_col], errors='ignore')
+    y = df[target_col].astype(int)
+    feature_names = list(df.columns)
     
-    X, y, feature_names = load_module.load_spaceship_data(path, target_col=target_col)
+    # X, y, feature_names = load_module.load_spaceship_data(path, target_col=target_col)
     X_df = pd.DataFrame(X, columns=feature_names).copy()
     y_s = pd.Series(y, name=target_col).copy()
 
     # If filter is specified, add the filter column and apply it.
     # Made for O3 where we want to filter to only transported passengers.
     if filter_col is not None and filter_value is not None:
-        raw_df = load_module.load_spaceship_data_as_df(path)
-        filter_mask = raw_df[filter_col] == filter_value
+        # raw_df = load_module.load_spaceship_data_as_df(path)
+        filter_mask = df[filter_col] == filter_value
         X_df = X_df.loc[filter_mask].reset_index(drop=True)
         y_s = y_s.loc[filter_mask].reset_index(drop=True)
 

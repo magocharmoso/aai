@@ -3,7 +3,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.impute import KNNImputer, SimpleImputer
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 """Standardizes the data of a DataFrame of the training data, 
     returns a new DataFrame with the numerical columns all standardized
